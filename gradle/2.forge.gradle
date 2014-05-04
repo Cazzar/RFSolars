@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+
+minecraft {
+    version = '1.6.4-9.11.1.964'
+    assetDir = '../run/assets'
+}
+
+version = "${minecraft.version}-$version"
+
+
+processResources {
+    // replace stuff in text files, not binary ones.
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.lang'
+        include '**/*.info'
+
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+        // replace version and MCVersion
+    }
+
+    // copy everything else, that's not text
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.lang'
+        exclude '**/*.info'
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
