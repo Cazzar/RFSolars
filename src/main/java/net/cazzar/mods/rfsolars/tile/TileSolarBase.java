@@ -74,6 +74,7 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 		}
 	}
 
+	/** This is the class you need to override to add different gen values. Don't touch anything else. Period. :D **/
 	public void generate() {
 		storage.receiveEnergy(10, false);
 	}

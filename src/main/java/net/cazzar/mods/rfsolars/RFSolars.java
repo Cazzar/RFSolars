@@ -2,6 +2,7 @@ package net.cazzar.mods.rfsolars;
 
 import net.cazzar.mods.rfsolars.blocks.BlockRegistry;
 import net.cazzar.mods.rfsolars.proxy.CommonProxy;
+import net.cazzar.mods.rfsolars.tile.TileRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -21,5 +22,6 @@ public class RFSolars {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		BlockRegistry.registerBlocks();
+		TileRegistry.register();
 	}
 }
