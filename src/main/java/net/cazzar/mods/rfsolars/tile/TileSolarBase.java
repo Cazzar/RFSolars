@@ -45,6 +45,8 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 	@Override
 	public void updateEntity() {
 		transferEnergy();
+		if (canGenerate())
+			storage.receiveEnergy(10, false);
 		damagePanel();
 	}
 
