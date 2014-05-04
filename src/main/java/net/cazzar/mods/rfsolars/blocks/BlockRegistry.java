@@ -1,5 +1,6 @@
-package net.cazzar.mods.rfsolars;
+package net.cazzar.mods.rfsolars.blocks;
 
+import net.cazzar.mods.rfsolars.Config;
 import net.minecraft.block.Block;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;

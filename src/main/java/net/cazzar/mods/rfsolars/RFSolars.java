@@ -1,5 +1,6 @@
 package net.cazzar.mods.rfsolars;
 
+import net.cazzar.mods.rfsolars.blocks.BlockRegistry;
 import net.cazzar.mods.rfsolars.proxy.CommonProxy;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
