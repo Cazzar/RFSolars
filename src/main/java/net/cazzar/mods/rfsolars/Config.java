@@ -13,7 +13,9 @@ public class Config {
 
 		solarID = config.getBlock("Solar Panel", 3000).getInt();
 
-		config.save();
-	}
+        if (config.hasChanged()) {
+            config.save();
+        }
+    }
 
 }
