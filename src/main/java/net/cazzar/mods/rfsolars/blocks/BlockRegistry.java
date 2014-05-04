@@ -11,8 +11,7 @@ public class BlockRegistry {
 
 	public static void registerBlocks() {
 		solar = new BlockRFSolar(Config.solarID).setUnlocalizedName("rfSolar");
-		GameRegistry.registerBlock(solar, "RFSolar");
+		GameRegistry.registerBlock(solar, ItemBlockRFSolar.class, "RFSolar");
 		LanguageRegistry.addName(solar, "Solar Panel");
 	}
-
 }

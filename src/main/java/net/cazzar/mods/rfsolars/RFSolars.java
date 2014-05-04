@@ -13,9 +13,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 public class RFSolars {
 	@Mod.Instance
 	public static RFSolars instance;
-
 	public static String texturepath = "rfsolars";
-
 	@SidedProxy(clientSide = "net.cazzar.mods.rfsolars.proxy.ClientProxy", serverSide = "net.cazzar.mods.rfsolars.proxy.CommonProxy")
 	public static CommonProxy proxy;
 

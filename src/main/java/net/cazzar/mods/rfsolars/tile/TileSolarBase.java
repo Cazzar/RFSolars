@@ -2,6 +2,9 @@ package net.cazzar.mods.rfsolars.tile;
 
 import java.util.Random;
 
+import net.cazzar.mods.rfsolars.Config;
+import net.cazzar.mods.rfsolars.blocks.BlockRFSolar;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import cofh.api.energy.EnergyStorage;
@@ -10,11 +13,11 @@ import cofh.api.energy.IEnergyHandler;
 public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
 	public static Random random = new Random();
-	public static int damage;
 	private EnergyStorage storage = new EnergyStorage(1000);
+	public static boolean damaged;
 
 	public TileSolarBase() {
-		damage = 0;
+		damaged = false;
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 	}
 
 	public boolean canGenerate() {
-		if (worldObj.provider.hasNoSky || worldObj.isRaining() || worldObj.isThundering() || !worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord) || !worldObj.isDaytime() || damage >= 300)
+		if (worldObj.provider.hasNoSky || worldObj.isRaining() || worldObj.isThundering() || !worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord) || !worldObj.isDaytime() || damaged)
 			return false;
 		else
 			return true;
@@ -60,22 +63,39 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
 	public void damagePanel() {
 		if (canGenerate() && random.nextInt(10) == 0)
-			damage++;
+			BlockRFSolar.damage++;
 		else if (worldObj.isRaining() || worldObj.isThundering() && random.nextInt(50) == 0)
-			damage--;
+			BlockRFSolar.damage--;
+		if (BlockRFSolar.damage > 500) {
+			damaged = true;
+		} else {
+			damaged = false;
+		}
 	}
 
 	public void transferEnergy() {
 		ForgeDirection direction = ForgeDirection.getOrientation(getBlockMetadata() % 6);
 		TileEntity tile = worldObj.getBlockTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
 		if (tile instanceof IEnergyHandler && !(tile instanceof TileSolarBase) && canGenerate()) {
-			IEnergyHandler ieh = (IEnergyHandler) tile;
-			storage.extractEnergy(ieh.receiveEnergy(direction.getOpposite(), storage.getEnergyStored() > 500 ? 500 : storage.getEnergyStored(), false), false);
+			IEnergyHandler energyHandler = (IEnergyHandler) tile;
+			storage.extractEnergy(energyHandler.receiveEnergy(direction.getOpposite(), storage.getEnergyStored() > 500 ? 500 : storage.getEnergyStored(), false), false);
 		}
 	}
 
-	/** This is the class you need to override to add different gen values. Don't touch anything else. Period. :D **/
+	@Override
+	public void readFromNBT(NBTTagCompound tagCompound) {
+		super.readFromNBT(tagCompound);
+		BlockRFSolar.damage = tagCompound.getInteger("damage");
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound tagCompound) {
+		super.writeToNBT(tagCompound);
+		tagCompound.setInteger("damage", BlockRFSolar.damage);
+	}
+
+	/** This is the method you need to override to add different gen values. Don't touch anything else. Period. :D **/
 	public void generate() {
-		storage.receiveEnergy(10, false);
+		storage.receiveEnergy(Config.baseGen, false);
 	}
 }
