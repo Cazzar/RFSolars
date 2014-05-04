@@ -45,9 +45,10 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 	@Override
 	public void updateEntity() {
 		transferEnergy();
-		if (canGenerate())
-			storage.receiveEnergy(10, false);
-		damagePanel();
+		if (canGenerate()) {
+			generate();
+			damagePanel();
+		}
 	}
 
 	public boolean canGenerate() {
@@ -71,5 +72,9 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 			IEnergyHandler ieh = (IEnergyHandler) tile;
 			storage.extractEnergy(ieh.receiveEnergy(direction.getOpposite(), storage.getEnergyStored() > 500 ? 500 : storage.getEnergyStored(), false), false);
 		}
+	}
+
+	public void generate() {
+		storage.receiveEnergy(10, false);
 	}
 }
