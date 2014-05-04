@@ -1,5 +1,6 @@
 package net.cazzar.mods.rfsolars.blocks;
 
+import cofh.api.block.IDismantleable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.cazzar.mods.rfsolars.creative.CreativeTab;
@@ -16,7 +17,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class BlockRFSolar extends BlockContainer {
+public class BlockRFSolar extends BlockContainer implements IDismantleable {
 	public BlockRFSolar(int id) {
 		super(id, Material.iron);
 		this.setCreativeTab(CreativeTab.tabRFSolars);
@@ -66,4 +67,15 @@ public class BlockRFSolar extends BlockContainer {
 
 		return true;
 	}
+
+    @Override
+    public ItemStack dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock) {
+        final int metadata = world.getBlockMetadata(x, y, z);
+        return new ItemStack(this, metadata);
+    }
+
+    @Override
+    public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
+        return true;
+    }
 }
