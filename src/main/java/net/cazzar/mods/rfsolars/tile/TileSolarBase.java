@@ -9,10 +9,9 @@ import cofh.api.energy.IEnergyHandler;
 
 public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
-	public static final int buffer = 1000;
-	protected EnergyStorage storage = new EnergyStorage(1000);
 	public static Random random = new Random();
 	public static int damage;
+	private EnergyStorage storage = new EnergyStorage(1000);
 
 	public TileSolarBase() {
 		damage = 0;
@@ -30,7 +29,7 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
 	@Override
 	public boolean canInterface(ForgeDirection from) {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -45,6 +44,7 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
 	@Override
 	public void updateEntity() {
+		transferEnergy();
 		damagePanel();
 	}
 
@@ -60,5 +60,14 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 			damage++;
 		else if (worldObj.isRaining() || worldObj.isThundering() && random.nextInt(50) == 0)
 			damage--;
+	}
+
+	public void transferEnergy() {
+		ForgeDirection direction = ForgeDirection.getOrientation(getBlockMetadata() % 6);
+		TileEntity tile = worldObj.getBlockTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+		if (tile instanceof IEnergyHandler && !(tile instanceof TileSolarBase) && canGenerate()) {
+			IEnergyHandler ieh = (IEnergyHandler) tile;
+			storage.extractEnergy(ieh.receiveEnergy(direction.getOpposite(), storage.getEnergyStored() > 500 ? 500 : storage.getEnergyStored(), false), false);
+		}
 	}
 }
