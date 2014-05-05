@@ -1,23 +1,23 @@
 package net.cazzar.mods.rfsolars.tile;
 
-import java.util.Random;
-
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
 import net.cazzar.mods.rfsolars.Config;
 import net.cazzar.mods.rfsolars.blocks.BlockRFSolar;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
+
+import java.util.Random;
 
 public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
 	public static Random random = new Random();
 	private EnergyStorage storage = new EnergyStorage(1000);
-	public static boolean damaged;
+	public int damage;
 
 	public TileSolarBase() {
-		damaged = false;
+		damage = 0;
 	}
 
 	@Override
@@ -55,22 +55,14 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 	}
 
 	public boolean canGenerate() {
-		if (worldObj.provider.hasNoSky || worldObj.isRaining() || worldObj.isThundering() || !worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord) || !worldObj.isDaytime() || damaged)
-			return false;
-		else
-			return true;
+        return !(worldObj.provider.hasNoSky || worldObj.isRaining() || worldObj.isThundering() || !worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord) || !worldObj.isDaytime() || damage >= 500);
 	}
 
 	public void damagePanel() {
 		if (canGenerate() && random.nextInt(10) == 0)
-			BlockRFSolar.damage++;
+			damage++;
 		else if (worldObj.isRaining() || worldObj.isThundering() && random.nextInt(50) == 0)
-			BlockRFSolar.damage--;
-		if (BlockRFSolar.damage > 500) {
-			damaged = true;
-		} else {
-			damaged = false;
-		}
+			damage--;
 	}
 
 	public void transferEnergy() {
@@ -91,7 +83,7 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 	@Override
 	public void writeToNBT(NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
-		tagCompound.setInteger("damage", BlockRFSolar.damage);
+		tagCompound.setInteger("damage", damage);
 	}
 
 	/** This is the method you need to override to add different gen values. Don't touch anything else. Period. :D **/
