@@ -1,14 +1,14 @@
 package net.cazzar.mods.rfsolars.tile;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
+import java.util.Random;
+
 import net.cazzar.mods.rfsolars.Config;
 import net.cazzar.mods.rfsolars.blocks.BlockRFSolar;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-
-import java.util.Random;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
 
 public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
@@ -55,14 +55,14 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 	}
 
 	public boolean canGenerate() {
-        return !(worldObj.provider.hasNoSky || worldObj.isRaining() || worldObj.isThundering() || !worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord) || !worldObj.isDaytime() || damage >= 500);
+		return !(worldObj.provider.hasNoSky || worldObj.isRaining() || worldObj.isThundering() || !worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord) || !worldObj.isDaytime() || damage >= 500);
 	}
 
 	public void damagePanel() {
 		if (canGenerate() && random.nextInt(10) == 0)
 			damage++;
-		else if (worldObj.isRaining() || worldObj.isThundering() && random.nextInt(50) == 0)
-			damage--;
+		else if (worldObj.isRaining() || worldObj.isThundering() && random.nextInt(50) == 0 && damage >= 250)
+			damage -= 250;
 	}
 
 	public void transferEnergy() {
