@@ -2,5 +2,5 @@ repositories {
     mavenCentral()
 }
 dependencies {
-	//none for now.
+    compile fileTree(dir: 'lib', includes: ['*.jar'])
 }

@@ -1,7 +1,8 @@
 package net.cazzar.mods.rfsolars.blocks;
 
-import java.util.List;
-
+import cofh.api.block.IDismantleable;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.cazzar.mods.rfsolars.RFSolars;
 import net.cazzar.mods.rfsolars.creative.CreativeTab;
 import net.cazzar.mods.rfsolars.tile.TileSolarBase;
@@ -16,9 +17,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import cofh.api.block.IDismantleable;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class BlockRFSolar extends BlockContainer implements IDismantleable {
 
@@ -79,7 +79,9 @@ public class BlockRFSolar extends BlockContainer implements IDismantleable {
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
-		if (player.getHeldItem() != null && player.getHeldItem() == new ItemStack(Item.bucketWater) && !world.isRemote && damage > 250) {
+        //System.out.println(((TileSolarBase) world.getBlockTileEntity(x, y, z)).getGenerationFactor());
+
+        if (player.getHeldItem() != null && player.getHeldItem() == new ItemStack(Item.bucketWater) && !world.isRemote && damage > 250) {
 			player.inventory.consumeInventoryItem(player.getHeldItem().itemID);
 			player.inventory.addItemStackToInventory(new ItemStack(Item.bucketEmpty));
 			player.addChatMessage("Solar Panel Cleaned");

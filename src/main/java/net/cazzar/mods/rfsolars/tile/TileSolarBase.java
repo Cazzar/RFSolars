@@ -1,14 +1,14 @@
 package net.cazzar.mods.rfsolars.tile;
 
-import java.util.Random;
-
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
 import net.cazzar.mods.rfsolars.Config;
-import net.cazzar.mods.rfsolars.blocks.BlockRFSolar;
+import net.cazzar.mods.rfsolars.util.MathHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
+
+import java.util.Random;
 
 public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
@@ -73,11 +73,10 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 			storage.extractEnergy(energyHandler.receiveEnergy(direction.getOpposite(), storage.getEnergyStored() > 500 ? 500 : storage.getEnergyStored(), false), false);
 		}
 	}
-
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
-		BlockRFSolar.damage = tagCompound.getInteger("damage");
+		damage = tagCompound.getInteger("damage");
 	}
 
 	@Override
@@ -86,8 +85,18 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 		tagCompound.setInteger("damage", damage);
 	}
 
-	/** This is the method you need to override to add different gen values. Don't touch anything else. Period. :D **/
-	public void generate() {
-		storage.receiveEnergy(Config.baseGen, false);
-	}
+    /** This is the method you need to override to add different gen values. Don't touch anything else. Period. :D **/
+    public int getGenerationValue() {
+        return Config.baseGen;
+    }
+
+    public double getGenerationFactor() {
+        long x = worldObj.getWorldInfo().getWorldTime();
+
+        return MathHelper.clamp(Math.sin((2 * Math.PI) / 24000d * x), 1, 0);
+    }
+
+    public void generate() {
+        storage.receiveEnergy((int) Math.round(getGenerationValue() * getGenerationFactor()), false);
+    }
 }
