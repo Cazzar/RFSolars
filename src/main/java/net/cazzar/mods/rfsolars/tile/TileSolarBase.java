@@ -1,14 +1,14 @@
 package net.cazzar.mods.rfsolars.tile;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
+import java.util.Random;
+
 import net.cazzar.mods.rfsolars.Config;
 import net.cazzar.mods.rfsolars.util.MathHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-
-import java.util.Random;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
 
 public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
@@ -77,6 +77,7 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 			storage.extractEnergy(energyHandler.receiveEnergy(direction.getOpposite(), storage.getEnergyStored() > 500 ? 500 : storage.getEnergyStored(), false), false);
 		}
 	}
+
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
@@ -89,18 +90,18 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 		tagCompound.setInteger("damage", damage);
 	}
 
-    /** This is the method you need to override to add different gen values. Don't touch anything else. Period. :D **/
-    public int getGenerationValue() {
-        return Config.baseGen;
-    }
+	/** This is the method you need to override to add different gen values. Don't touch anything else. Period. :D **/
+	public int getGenerationValue() {
+		return Config.baseGen;
+	}
 
-    public double getGenerationFactor() {
-        long x = worldObj.getWorldInfo().getWorldTime();
+	public double getGenerationFactor() {
+		long x = worldObj.getWorldInfo().getWorldTime();
 
-        return MathHelper.clamp(Math.sin((2 * Math.PI) / 24000d * x), 1, 0);
-    }
+		return MathHelper.clamp(1.5D * Math.sin((2 * Math.PI) / 24000d * x), 1, 0);
+	}
 
-    public void generate() {
-        storage.receiveEnergy((int) Math.round(getGenerationValue() * getGenerationFactor()), false);
-    }
+	public void generate() {
+		storage.receiveEnergy((int) Math.round(getGenerationValue() * getGenerationFactor()), false);
+	}
 }
