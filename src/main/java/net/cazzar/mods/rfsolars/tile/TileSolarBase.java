@@ -18,31 +18,35 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 
 	public TileSolarBase() {
 		damage = 0;
+        storage.setMaxTransfer(3200);
 	}
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		return 0;
+        if (!canInterface(from)) return 0;
+        return storage.receiveEnergy(maxReceive, simulate);
 	}
 
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		return 0;
+        if (!canInterface(from)) return 0;
+
+        return storage.extractEnergy(maxExtract, simulate);
 	}
 
 	@Override
 	public boolean canInterface(ForgeDirection from) {
-		return true;
+		return from != ForgeDirection.UP;
 	}
 
 	@Override
 	public int getEnergyStored(ForgeDirection from) {
-		return 0;
+		return storage.getEnergyStored();
 	}
 
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from) {
-		return 0;
+		return 1000;
 	}
 
 	@Override

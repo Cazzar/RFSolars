@@ -17,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
 import java.util.List;
 
@@ -79,7 +80,9 @@ public class BlockRFSolar extends BlockContainer implements IDismantleable {
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
-        //System.out.println(((TileSolarBase) world.getBlockTileEntity(x, y, z)).getGenerationFactor());
+        if (!world.isRemote) {
+            player.addChatMessage("Energy Stored: " + (((TileSolarBase) world.getBlockTileEntity(x, y, z)).getEnergyStored(ForgeDirection.DOWN)));
+        }
 
         if (player.getHeldItem() != null && player.getHeldItem() == new ItemStack(Item.bucketWater) && !world.isRemote && damage > 250) {
 			player.inventory.consumeInventoryItem(player.getHeldItem().itemID);
