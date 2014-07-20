@@ -81,7 +81,7 @@ public class BlockRFSolar extends BlockContainer implements IDismantleable {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
         if (!world.isRemote) {
-            player.addChatMessage("Energy Stored: " + (((TileSolarBase) world.getBlockTileEntity(x, y, z)).getEnergyStored(ForgeDirection.DOWN)));
+            player.addChatMessage("Energy Stored: " + (((TileSolarBase) world.getBlockTileEntity(x, y, z)).getEnergyStored(ForgeDirection.DOWN)) + " damage: " + ((TileSolarBase) world.getBlockTileEntity(x, y, z)).damage);
         }
 
         if (player.getHeldItem() != null && player.getHeldItem() == new ItemStack(Item.bucketWater) && !world.isRemote && damage > 250) {

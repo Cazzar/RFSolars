@@ -1,18 +1,14 @@
 package net.cazzar.mods.rfsolars.tile;
 
-import java.util.Random;
-
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
 import net.cazzar.mods.rfsolars.Config;
 import net.cazzar.mods.rfsolars.util.MathHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
 
 public class TileSolarBase extends TileEntity implements IEnergyHandler {
-
-	public static Random random = new Random();
 	private EnergyStorage storage = new EnergyStorage(1000);
 	public int damage;
 
@@ -52,22 +48,33 @@ public class TileSolarBase extends TileEntity implements IEnergyHandler {
 	@Override
 	public void updateEntity() {
 		transferEnergy();
-		if (canGenerate()) {
-			generate();
-			damagePanel();
-		}
+        damagePanel();
+
+        if (canGenerate()) generate();
 	}
 
 	public boolean canGenerate() {
-		return !(worldObj.provider.hasNoSky || worldObj.isRaining() || worldObj.isThundering() || !worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord) || !worldObj.isDaytime() || damage >= 500);
+		return !(worldObj.provider.hasNoSky || worldObj.isRaining() || worldObj.isThundering() || !worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord) || !worldObj.isDaytime() || damage >= getMaxDamage());
 	}
 
 	public void damagePanel() {
-		if (canGenerate() && random.nextInt(10) == 0)
-			damage++;
-		else if (worldObj.isRaining() || worldObj.isThundering() && random.nextInt(50) == 0 && damage >= 250)
-			damage -= 250;
+		if (canGenerate() && worldObj.rand.nextInt(100) == 0) incrementDamage(1);
+
+        if ((worldObj.isRaining() || worldObj.isThundering()) && worldObj.rand.nextInt(500) == 0) incrementDamage(5);
 	}
+
+    void incrementDamage(int amount) {
+        if (damage + amount >= getMaxDamage()) {
+            damage = getMaxDamage();
+            return;
+        }
+
+        damage += amount;
+    }
+
+    int getMaxDamage() {
+        return 500;
+    }
 
 	public void transferEnergy() {
 		ForgeDirection direction = ForgeDirection.getOrientation(getBlockMetadata() % 6);
